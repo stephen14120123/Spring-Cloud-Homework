@@ -1,0 +1,11 @@
+ai.ps1
+target/
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+.DS_Store
+*.swp
+application-local.yml

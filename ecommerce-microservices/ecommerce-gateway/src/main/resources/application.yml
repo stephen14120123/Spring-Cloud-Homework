@@ -1,0 +1,141 @@
+# =====================================================================
+#  ecommerce-gateway  —— 统一网关入口配置
+#  技术栈：Spring Cloud Gateway + Nacos Discovery + LoadBalancer
+#  监听端口：8080（前端所有请求统一到这里）
+# =====================================================================
+
+server:
+  port: 8080
+
+spring:
+  # -------------------- 应用标识 --------------------
+  application:
+    name: ecommerce-gateway
+
+  # -------------------- Nacos 服务注册与发现 --------------------
+  # 作用：Gateway 自身注册到 Nacos，同时通过 Nacos 获取下游服务的真实 IP:Port
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848   # Nacos 服务端地址（本机演示）
+        namespace: public               # 命名空间，默认 public
+
+    # -------------------- Spring Cloud Gateway 路由规则 --------------------
+    # 路由匹配流程：请求 → Gateway → Predicate(断言) 匹配路径 → Filter(过滤器) → lb://转发
+    gateway:
+      routes:
+        # ==================== 认证服务 ====================
+        - id: auth-service               # 路由 ID（唯一标识，任意命名）
+          uri: lb://ecommerce-auth       # lb:// = LoadBalancer，从 Nacos 按服务名获取地址
+          predicates:
+            - Path=/api/auth/**          # 匹配 /api/auth/ 下的所有请求
+          filters:
+            - StripPrefix=1              # 去掉第一级路径 /api，转发到后端变成 /auth/**
+
+        # ==================== 用户服务 ====================
+        - id: user-service
+          uri: lb://ecommerce-user
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 商品服务 ====================
+        - id: product-service
+          uri: lb://ecommerce-product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 订单服务 ====================
+        - id: order-service
+          uri: lb://ecommerce-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 购物车服务 ====================
+        - id: cart-service
+          uri: lb://ecommerce-cart
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 支付模拟服务 ====================
+        - id: payment-service
+          uri: lb://ecommerce-payment
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 库存服务 ====================
+        - id: stock-service
+          uri: lb://ecommerce-stock
+          predicates:
+            - Path=/api/stock/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 优惠券服务 ====================
+        - id: coupon-service
+          uri: lb://ecommerce-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 物流服务 ====================
+        - id: logistics-service
+          uri: lb://ecommerce-logistics
+          predicates:
+            - Path=/api/logistics/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 评价服务 ====================
+        - id: review-service
+          uri: lb://ecommerce-review
+          predicates:
+            - Path=/api/review/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== 后台管理服务 ====================
+        - id: admin-service
+          uri: lb://ecommerce-admin
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - StripPrefix=1
+
+      # ------- 全局配置 -------
+      # 告诉 Gateway 在转发时往 Header 里透传原始请求的 Host，部分业务场景需要
+      default-filters:
+        - AddRequestHeader=X-Gateway-Origin, ecommerce-gateway
+
+      # 开启 Gateway 与 LoadBalancer 的缓存，提升路由性能
+      loadbalancer:
+        use404: false
+
+      # ------- 跨域配置（CORS）-------
+      # 前端（Vue 开发服务器 localhost:5173 或打包后的静态页面）
+      # 与后端网关 localhost:8080 端口不同，必须放开跨域才能正常演示
+      globalcors:
+        cors-configurations:
+          '[/**]':                     # 所有路径都允许跨域
+            allowedOriginPatterns: "*" # 允许任意来源（演示用，生产应限定具体域名）
+            allowedMethods: "*"        # 允许所有 HTTP 方法（GET / POST / PUT / DELETE / OPTIONS 等）
+            allowedHeaders: "*"        # 允许所有请求头（包括自定义的 Authorization、X-User-Id 等）
+            allowCredentials: true     # 允许携带 Cookie（前端登录后跨域发请求需要）
+
+# =====================================================================
+#  JWT 密钥配置（网关过滤器会读取）
+#  这里是为后续写 AuthGlobalFilter 预留的配置项
+# =====================================================================
+jwt:
+  secret: EcommerceSecretKeyForJWT2024DemoOnlyDoNotUseInProd!!!  # 签名密钥
+  expiration: 86400000                                            # Token 过期时间（毫秒），默认 24h
