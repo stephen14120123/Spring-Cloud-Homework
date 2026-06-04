@@ -1,0 +1,22 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ecommerce-order
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: public
+
+    # 开启 Sentinel 对 Feign 的支持
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8718   # Sentinel Dashboard 地址（可选，不启动也不影响降级演示）
+
+# 关键配置：让 Feign 在远程调用时可以触发 Sentinel 降级
+feign:
+  sentinel:
+    enabled: true
