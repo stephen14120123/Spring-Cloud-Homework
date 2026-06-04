@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>ecommerce-order</artifactId>
-    <description>订单服务：下单、Feign 远程调用商品服务</description>
+    <description>订单服务：全链路 + MySQL 落库</description>
 
     <dependencies>
         <dependency>
@@ -35,16 +35,26 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- Sentinel 熔断降级（配合 Feign fallback） -->
+        <!-- Sentinel 熔断降级 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 
-        <!-- LoadBalancer：Feign 负载均衡寻址必需（@FeignClient 无 URL 时依赖此包） -->
+        <!-- LoadBalancer -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <!-- MyBatis-Plus ORM + MySQL -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
     </dependencies>
 

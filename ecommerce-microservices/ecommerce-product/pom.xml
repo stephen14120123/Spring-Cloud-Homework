@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>ecommerce-product</artifactId>
-    <description>商品服务：商品信息查询</description>
+    <description>商品服务：MySQL + Redis 旁路缓存</description>
 
     <dependencies>
         <dependency>
@@ -27,6 +27,24 @@
             <groupId>com.ecommerce</groupId>
             <artifactId>ecommerce-common</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!-- MyBatis-Plus ORM -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <!-- MySQL 驱动 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <!-- Redis 缓存 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 

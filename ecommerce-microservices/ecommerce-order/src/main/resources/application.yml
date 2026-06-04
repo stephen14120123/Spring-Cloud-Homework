@@ -11,12 +11,22 @@ spring:
         server-addr: 127.0.0.1:8848
         namespace: public
 
-    # 开启 Sentinel 对 Feign 的支持
     sentinel:
       transport:
-        dashboard: 127.0.0.1:8718   # Sentinel Dashboard 地址（可选，不启动也不影响降级演示）
+        dashboard: 127.0.0.1:8718
 
-# 关键配置：让 Feign 在远程调用时可以触发 Sentinel 降级
+  # ==================== MySQL 数据源 ====================
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/ecommerce?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
 feign:
   sentinel:
     enabled: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
