@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ecommerce-auth
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: public
+
+# JWT 密钥配置（与网关 application.yml 中的参数保持一致）
+jwt:
+  secret: EcommerceSecretKeyForJWT2024DemoOnlyDoNotUseInProd!!!
+  expiration: 86400000
